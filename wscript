@@ -2,7 +2,7 @@
 
 def build(bld):
 
-    lte_module_dependencies = ['core', 'network', 'spectrum', 'stats', 'buildings', 'virtual-net-device','point-to-point','applications','internet','csma']
+    lte_module_dependencies = ['core', 'network', 'spectrum', 'stats', 'buildings', 'virtual-net-device','point-to-point','applications','internet','csma','lte']
     if (bld.env['ENABLE_EMU']):
         lte_module_dependencies.append('fd-net-device')
     module = bld.create_ns3_module('lte-rl', lte_module_dependencies)
@@ -27,4 +27,4 @@ def build(bld):
     if (bld.env['ENABLE_EXAMPLES']):
       bld.recurse('examples')
 
-    bld.ns3_python_bindings()
+    # bld.ns3_python_bindings()

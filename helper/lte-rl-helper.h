@@ -41,7 +41,7 @@
 namespace ns3 {
 
 
-class LteUePhy;
+class LteRLUePhy;
 class LteEnbPhy;
 class SpectrumChannel;
 class EpcHelper;
