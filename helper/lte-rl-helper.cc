@@ -64,11 +64,11 @@
 
 namespace ns3 {
 
-NS_LOG_COMPONENT_DEFINE ("LteRLHelper");
+NS_LOG_COMPONENT_DEFINE ("LteRlHelper");
 
-NS_OBJECT_ENSURE_REGISTERED (LteRLHelper);
+NS_OBJECT_ENSURE_REGISTERED (LteRlHelper);
 
-LteRLHelper::LteRLHelper (void)
+LteRlHelper::LteRlHelper (void)
   : m_fadingStreamsAssigned (false),
     m_imsiCounter (0),
     m_cellIdCounter (0)
@@ -82,7 +82,7 @@ LteRLHelper::LteRLHelper (void)
 }
 
 void 
-LteRLHelper::DoInitialize (void)
+LteRlHelper::DoInitialize (void)
 {
   NS_LOG_FUNCTION (this);
   m_downlinkChannel = m_channelFactory.Create<SpectrumChannel> ();
@@ -132,48 +132,48 @@ LteRLHelper::DoInitialize (void)
 
 }
 
-LteRLHelper::~LteRLHelper (void)
+LteRlHelper::~LteRlHelper (void)
 {
   NS_LOG_FUNCTION (this);
 }
 
-TypeId LteRLHelper::GetTypeId (void)
+TypeId LteRlHelper::GetTypeId (void)
 {
   static TypeId
     tid =
-    TypeId ("ns3::LteRLHelper")
+    TypeId ("ns3::LteRlHelper")
     .SetParent<Object> ()
-    .AddConstructor<LteRLHelper> ()
+    .AddConstructor<LteRlHelper> ()
     .AddAttribute ("Scheduler",
                    "The type of scheduler to be used for eNBs. "
                    "The allowed values for this attributes are the type names "
                    "of any class inheriting from ns3::FfMacScheduler.",
                    StringValue ("ns3::PfFfMacScheduler"),
-                   MakeStringAccessor (&LteRLHelper::SetSchedulerType,
-                                       &LteRLHelper::GetSchedulerType),
+                   MakeStringAccessor (&LteRlHelper::SetSchedulerType,
+                                       &LteRlHelper::GetSchedulerType),
                    MakeStringChecker ())
     .AddAttribute ("FfrAlgorithm",
                    "The type of FFR algorithm to be used for eNBs. "
                    "The allowed values for this attributes are the type names "
                    "of any class inheriting from ns3::LteFfrAlgorithm.",
                    StringValue ("ns3::LteFrNoOpAlgorithm"),
-                   MakeStringAccessor (&LteRLHelper::SetFfrAlgorithmType,
-                                       &LteRLHelper::GetFfrAlgorithmType),
+                   MakeStringAccessor (&LteRlHelper::SetFfrAlgorithmType,
+                                       &LteRlHelper::GetFfrAlgorithmType),
                    MakeStringChecker ())
     .AddAttribute ("HandoverAlgorithm",
                    "The type of handover algorithm to be used for eNBs. "
                    "The allowed values for this attributes are the type names "
                    "of any class inheriting from ns3::LteHandoverAlgorithm.",
                    StringValue ("ns3::NoOpHandoverAlgorithm"),
-                   MakeStringAccessor (&LteRLHelper::SetHandoverAlgorithmType,
-                                       &LteRLHelper::GetHandoverAlgorithmType),
+                   MakeStringAccessor (&LteRlHelper::SetHandoverAlgorithmType,
+                                       &LteRlHelper::GetHandoverAlgorithmType),
                    MakeStringChecker ())
     .AddAttribute ("PathlossModel",
                    "The type of pathloss model to be used. "
                    "The allowed values for this attributes are the type names "
                    "of any class inheriting from ns3::PropagationLossModel.",
                    StringValue ("ns3::FriisPropagationLossModel"),
-                   MakeStringAccessor (&LteRLHelper::SetPathlossModelType),
+                   MakeStringAccessor (&LteRlHelper::SetPathlossModelType),
                    MakeStringChecker ())
     .AddAttribute ("FadingModel",
                    "The type of fading model to be used."
@@ -181,31 +181,31 @@ TypeId LteRLHelper::GetTypeId (void)
                    "of any class inheriting from ns3::SpectrumPropagationLossModel."
                    "If the type is set to an empty string, no fading model is used.",
                    StringValue (""),
-                   MakeStringAccessor (&LteRLHelper::SetFadingModel),
+                   MakeStringAccessor (&LteRlHelper::SetFadingModel),
                    MakeStringChecker ())
     .AddAttribute ("UseIdealRrc",
                    "If true, LteRrcProtocolIdeal will be used for RRC signaling. "
                    "If false, LteRrcProtocolReal will be used.",
                    BooleanValue (true), 
-                   MakeBooleanAccessor (&LteRLHelper::m_useIdealRrc),
+                   MakeBooleanAccessor (&LteRlHelper::m_useIdealRrc),
                    MakeBooleanChecker ())
     .AddAttribute ("AnrEnabled",
                    "Activate or deactivate Automatic Neighbour Relation function",
                    BooleanValue (true),
-                   MakeBooleanAccessor (&LteRLHelper::m_isAnrEnabled),
+                   MakeBooleanAccessor (&LteRlHelper::m_isAnrEnabled),
                    MakeBooleanChecker ())
     .AddAttribute ("UsePdschForCqiGeneration",
                    "If true, DL-CQI will be calculated from PDCCH as signal and PDSCH as interference "
                    "If false, DL-CQI will be calculated from PDCCH as signal and PDCCH as interference  ",
                    BooleanValue (true),
-                   MakeBooleanAccessor (&LteRLHelper::m_usePdschForCqiGeneration),
+                   MakeBooleanAccessor (&LteRlHelper::m_usePdschForCqiGeneration),
                    MakeBooleanChecker ())
   ;
   return tid;
 }
 
 void
-LteRLHelper::DoDispose ()
+LteRlHelper::DoDispose ()
 {
   NS_LOG_FUNCTION (this);
   m_downlinkChannel = 0;
@@ -215,14 +215,14 @@ LteRLHelper::DoDispose ()
 
 
 void 
-LteRLHelper::SetEpcHelper (Ptr<EpcHelper> h)
+LteRlHelper::SetEpcHelper (Ptr<EpcHelper> h)
 {
   NS_LOG_FUNCTION (this << h);
   m_epcHelper = h;
 }
 
 void 
-LteRLHelper::SetSchedulerType (std::string type) 
+LteRlHelper::SetSchedulerType (std::string type) 
 {
   NS_LOG_FUNCTION (this << type);
   m_schedulerFactory = ObjectFactory ();
@@ -230,26 +230,26 @@ LteRLHelper::SetSchedulerType (std::string type)
 }
 
 std::string
-LteRLHelper::GetSchedulerType () const
+LteRlHelper::GetSchedulerType () const
 {
   return m_schedulerFactory.GetTypeId ().GetName ();
 } 
 
 void 
-LteRLHelper::SetSchedulerAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetSchedulerAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this << n);
   m_schedulerFactory.Set (n, v);
 }
 
 std::string
-LteRLHelper::GetFfrAlgorithmType () const
+LteRlHelper::GetFfrAlgorithmType () const
 {
   return m_ffrAlgorithmFactory.GetTypeId ().GetName ();
 }
 
 void
-LteRLHelper::SetFfrAlgorithmType (std::string type)
+LteRlHelper::SetFfrAlgorithmType (std::string type)
 {
   NS_LOG_FUNCTION (this << type);
   m_ffrAlgorithmFactory = ObjectFactory ();
@@ -257,20 +257,20 @@ LteRLHelper::SetFfrAlgorithmType (std::string type)
 }
 
 void
-LteRLHelper::SetFfrAlgorithmAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetFfrAlgorithmAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this << n);
   m_ffrAlgorithmFactory.Set (n, v);
 }
 
 std::string
-LteRLHelper::GetHandoverAlgorithmType () const
+LteRlHelper::GetHandoverAlgorithmType () const
 {
   return m_handoverAlgorithmFactory.GetTypeId ().GetName ();
 }
 
 void
-LteRLHelper::SetHandoverAlgorithmType (std::string type)
+LteRlHelper::SetHandoverAlgorithmType (std::string type)
 {
   NS_LOG_FUNCTION (this << type);
   m_handoverAlgorithmFactory = ObjectFactory ();
@@ -278,7 +278,7 @@ LteRLHelper::SetHandoverAlgorithmType (std::string type)
 }
 
 void
-LteRLHelper::SetHandoverAlgorithmAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetHandoverAlgorithmAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this << n);
   m_handoverAlgorithmFactory.Set (n, v);
@@ -286,7 +286,7 @@ LteRLHelper::SetHandoverAlgorithmAttribute (std::string n, const AttributeValue 
 
 
 void 
-LteRLHelper::SetPathlossModelType (std::string type) 
+LteRlHelper::SetPathlossModelType (std::string type) 
 {
   NS_LOG_FUNCTION (this << type);
   m_dlPathlossModelFactory = ObjectFactory ();
@@ -296,7 +296,7 @@ LteRLHelper::SetPathlossModelType (std::string type)
 }
 
 void 
-LteRLHelper::SetPathlossModelAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetPathlossModelAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this << n);
   m_dlPathlossModelFactory.Set (n, v);
@@ -304,7 +304,7 @@ LteRLHelper::SetPathlossModelAttribute (std::string n, const AttributeValue &v)
 }
 
 void
-LteRLHelper::SetEnbDeviceAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetEnbDeviceAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this);
   m_enbNetDeviceFactory.Set (n, v);
@@ -312,42 +312,42 @@ LteRLHelper::SetEnbDeviceAttribute (std::string n, const AttributeValue &v)
 
 
 void 
-LteRLHelper::SetEnbAntennaModelType (std::string type)
+LteRlHelper::SetEnbAntennaModelType (std::string type)
 {
   NS_LOG_FUNCTION (this);
   m_enbAntennaModelFactory.SetTypeId (type);
 }
 
 void 
-LteRLHelper::SetEnbAntennaModelAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetEnbAntennaModelAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this);
   m_enbAntennaModelFactory.Set (n, v);
 }
 
 void
-LteRLHelper::SetUeDeviceAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetUeDeviceAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this);
   m_ueNetDeviceFactory.Set (n, v);
 }
 
 void 
-LteRLHelper::SetUeAntennaModelType (std::string type)
+LteRlHelper::SetUeAntennaModelType (std::string type)
 {
   NS_LOG_FUNCTION (this);
   m_ueAntennaModelFactory.SetTypeId (type);
 }
 
 void 
-LteRLHelper::SetUeAntennaModelAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetUeAntennaModelAttribute (std::string n, const AttributeValue &v)
 {
   NS_LOG_FUNCTION (this);
   m_ueAntennaModelFactory.Set (n, v);
 }
 
 void 
-LteRLHelper::SetFadingModel (std::string type) 
+LteRlHelper::SetFadingModel (std::string type) 
 {
   NS_LOG_FUNCTION (this << type);
   m_fadingModelType = type;
@@ -359,27 +359,27 @@ LteRLHelper::SetFadingModel (std::string type)
 }
 
 void 
-LteRLHelper::SetFadingModelAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetFadingModelAttribute (std::string n, const AttributeValue &v)
 {
   m_fadingModelFactory.Set (n, v);
 }
 
 void 
-LteRLHelper::SetSpectrumChannelType (std::string type) 
+LteRlHelper::SetSpectrumChannelType (std::string type) 
 {
   NS_LOG_FUNCTION (this << type);
   m_channelFactory.SetTypeId (type);
 }
 
 void 
-LteRLHelper::SetSpectrumChannelAttribute (std::string n, const AttributeValue &v)
+LteRlHelper::SetSpectrumChannelAttribute (std::string n, const AttributeValue &v)
 {
   m_channelFactory.Set (n, v);
 }
 
 
 NetDeviceContainer
-LteRLHelper::InstallEnbDevice (NodeContainer c)
+LteRlHelper::InstallEnbDevice (NodeContainer c)
 {
   NS_LOG_FUNCTION (this);
   Initialize ();  // will run DoInitialize () if necessary
@@ -394,7 +394,7 @@ LteRLHelper::InstallEnbDevice (NodeContainer c)
 }
 
 NetDeviceContainer
-LteRLHelper::InstallUeDevice (NodeContainer c)
+LteRlHelper::InstallUeDevice (NodeContainer c)
 {
   NS_LOG_FUNCTION (this);
   NetDeviceContainer devices;
@@ -409,7 +409,7 @@ LteRLHelper::InstallUeDevice (NodeContainer c)
 
 
 Ptr<NetDevice>
-LteRLHelper::InstallSingleEnbDevice (Ptr<Node> n)
+LteRlHelper::InstallSingleEnbDevice (Ptr<Node> n)
 {
 
   NS_ABORT_MSG_IF (m_cellIdCounter == 65535, "max num eNBs exceeded");
@@ -442,7 +442,7 @@ LteRLHelper::InstallSingleEnbDevice (Ptr<Node> n)
   ulPhy->SetChannel (m_uplinkChannel);
 
   Ptr<MobilityModel> mm = n->GetObject<MobilityModel> ();
-  NS_ASSERT_MSG (mm, "MobilityModel needs to be set on node before calling LteRLHelper::InstallUeDevice ()");
+  NS_ASSERT_MSG (mm, "MobilityModel needs to be set on node before calling LteRlHelper::InstallUeDevice ()");
   dlPhy->SetMobility (mm);
   ulPhy->SetMobility (mm);
 
@@ -581,7 +581,7 @@ LteRLHelper::InstallSingleEnbDevice (Ptr<Node> n)
 }
 
 Ptr<NetDevice>
-LteRLHelper::InstallSingleUeDevice (Ptr<Node> n)
+LteRlHelper::InstallSingleUeDevice (Ptr<Node> n)
 {
   NS_LOG_FUNCTION (this);
   Ptr<LteSpectrumPhy> dlPhy = CreateObject<LteSpectrumPhy> ();
@@ -630,7 +630,7 @@ LteRLHelper::InstallSingleUeDevice (Ptr<Node> n)
   ulPhy->SetChannel (m_uplinkChannel);
 
   Ptr<MobilityModel> mm = n->GetObject<MobilityModel> ();
-  NS_ASSERT_MSG (mm, "MobilityModel needs to be set on node before calling LteRLHelper::InstallUeDevice ()");
+  NS_ASSERT_MSG (mm, "MobilityModel needs to be set on node before calling LteRlHelper::InstallUeDevice ()");
   dlPhy->SetMobility (mm);
   ulPhy->SetMobility (mm);
 
@@ -713,7 +713,7 @@ LteRLHelper::InstallSingleUeDevice (Ptr<Node> n)
 
 
 void
-LteRLHelper::Attach (NetDeviceContainer ueDevices)
+LteRlHelper::Attach (NetDeviceContainer ueDevices)
 {
   NS_LOG_FUNCTION (this);
   for (NetDeviceContainer::Iterator i = ueDevices.Begin (); i != ueDevices.End (); ++i)
@@ -723,7 +723,7 @@ LteRLHelper::Attach (NetDeviceContainer ueDevices)
 }
 
 void
-LteRLHelper::Attach (Ptr<NetDevice> ueDevice)
+LteRlHelper::Attach (Ptr<NetDevice> ueDevice)
 {
   NS_LOG_FUNCTION (this);
 
@@ -754,7 +754,7 @@ LteRLHelper::Attach (Ptr<NetDevice> ueDevice)
 }
 
 void
-LteRLHelper::Attach (NetDeviceContainer ueDevices, Ptr<NetDevice> enbDevice)
+LteRlHelper::Attach (NetDeviceContainer ueDevices, Ptr<NetDevice> enbDevice)
 {
   NS_LOG_FUNCTION (this);
   for (NetDeviceContainer::Iterator i = ueDevices.Begin (); i != ueDevices.End (); ++i)
@@ -764,7 +764,7 @@ LteRLHelper::Attach (NetDeviceContainer ueDevices, Ptr<NetDevice> enbDevice)
 }
 
 void
-LteRLHelper::Attach (Ptr<NetDevice> ueDevice, Ptr<NetDevice> enbDevice)
+LteRlHelper::Attach (Ptr<NetDevice> ueDevice, Ptr<NetDevice> enbDevice)
 {
   NS_LOG_FUNCTION (this);
   //enbRrc->SetCellId (enbDevice->GetObject<LteEnbNetDevice> ()->GetCellId ());
@@ -789,7 +789,7 @@ LteRLHelper::Attach (Ptr<NetDevice> ueDevice, Ptr<NetDevice> enbDevice)
 }
 
 void
-LteRLHelper::AttachToClosestEnb (NetDeviceContainer ueDevices, NetDeviceContainer enbDevices)
+LteRlHelper::AttachToClosestEnb (NetDeviceContainer ueDevices, NetDeviceContainer enbDevices)
 {
   NS_LOG_FUNCTION (this);
   for (NetDeviceContainer::Iterator i = ueDevices.Begin (); i != ueDevices.End (); ++i)
@@ -799,7 +799,7 @@ LteRLHelper::AttachToClosestEnb (NetDeviceContainer ueDevices, NetDeviceContaine
 }
 
 void
-LteRLHelper::AttachToClosestEnb (Ptr<NetDevice> ueDevice, NetDeviceContainer enbDevices)
+LteRlHelper::AttachToClosestEnb (Ptr<NetDevice> ueDevice, NetDeviceContainer enbDevices)
 {
   NS_LOG_FUNCTION (this);
   NS_ASSERT_MSG (enbDevices.GetN () > 0, "empty enb device container");
@@ -821,7 +821,7 @@ LteRLHelper::AttachToClosestEnb (Ptr<NetDevice> ueDevice, NetDeviceContainer enb
 }
 
 uint8_t
-LteRLHelper::ActivateDedicatedEpsBearer (NetDeviceContainer ueDevices, EpsBearer bearer, Ptr<EpcTft> tft)
+LteRlHelper::ActivateDedicatedEpsBearer (NetDeviceContainer ueDevices, EpsBearer bearer, Ptr<EpcTft> tft)
 {
   NS_LOG_FUNCTION (this);
   for (NetDeviceContainer::Iterator i = ueDevices.Begin (); i != ueDevices.End (); ++i)
@@ -834,7 +834,7 @@ LteRLHelper::ActivateDedicatedEpsBearer (NetDeviceContainer ueDevices, EpsBearer
 
 
 uint8_t
-LteRLHelper::ActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice, EpsBearer bearer, Ptr<EpcTft> tft)
+LteRlHelper::ActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice, EpsBearer bearer, Ptr<EpcTft> tft)
 {
   NS_LOG_FUNCTION (this);
 
@@ -951,7 +951,7 @@ DrbActivatorRL::ActivateDrb (uint64_t imsi, uint16_t cellId, uint16_t rnti)
 
 
 void 
-LteRLHelper::ActivateDataRadioBearer (Ptr<NetDevice> ueDevice, EpsBearer bearer)
+LteRlHelper::ActivateDataRadioBearer (Ptr<NetDevice> ueDevice, EpsBearer bearer)
 {
   NS_LOG_FUNCTION (this << ueDevice);
   NS_ASSERT_MSG (m_epcHelper == 0, "this method must not be used when the EPC is being used");
@@ -973,7 +973,7 @@ LteRLHelper::ActivateDataRadioBearer (Ptr<NetDevice> ueDevice, EpsBearer bearer)
 }
 
 void
-LteRLHelper::AddX2Interface (NodeContainer enbNodes)
+LteRlHelper::AddX2Interface (NodeContainer enbNodes)
 {
   NS_LOG_FUNCTION (this);
 
@@ -989,7 +989,7 @@ LteRLHelper::AddX2Interface (NodeContainer enbNodes)
 }
 
 void
-LteRLHelper::AddX2Interface (Ptr<Node> enbNode1, Ptr<Node> enbNode2)
+LteRlHelper::AddX2Interface (Ptr<Node> enbNode1, Ptr<Node> enbNode2)
 {
   NS_LOG_FUNCTION (this);
   NS_LOG_INFO ("setting up the X2 interface");
@@ -998,15 +998,15 @@ LteRLHelper::AddX2Interface (Ptr<Node> enbNode1, Ptr<Node> enbNode2)
 }
 
 void
-LteRLHelper::HandoverRequest (Time hoTime, Ptr<NetDevice> ueDev, Ptr<NetDevice> sourceEnbDev, Ptr<NetDevice> targetEnbDev)
+LteRlHelper::HandoverRequest (Time hoTime, Ptr<NetDevice> ueDev, Ptr<NetDevice> sourceEnbDev, Ptr<NetDevice> targetEnbDev)
 {
   NS_LOG_FUNCTION (this << ueDev << sourceEnbDev << targetEnbDev);
-  NS_ASSERT_MSG (m_epcHelper, "Handover requires the use of the EPC - did you forget to call LteRLHelper::SetEpcHelper () ?");
-  Simulator::Schedule (hoTime, &LteRLHelper::DoHandoverRequest, this, ueDev, sourceEnbDev, targetEnbDev);
+  NS_ASSERT_MSG (m_epcHelper, "Handover requires the use of the EPC - did you forget to call LteRlHelper::SetEpcHelper () ?");
+  Simulator::Schedule (hoTime, &LteRlHelper::DoHandoverRequest, this, ueDev, sourceEnbDev, targetEnbDev);
 }
 
 void
-LteRLHelper::DoHandoverRequest (Ptr<NetDevice> ueDev, Ptr<NetDevice> sourceEnbDev, Ptr<NetDevice> targetEnbDev)
+LteRlHelper::DoHandoverRequest (Ptr<NetDevice> ueDev, Ptr<NetDevice> sourceEnbDev, Ptr<NetDevice> targetEnbDev)
 {
   NS_LOG_FUNCTION (this << ueDev << sourceEnbDev << targetEnbDev);
 
@@ -1017,7 +1017,7 @@ LteRLHelper::DoHandoverRequest (Ptr<NetDevice> ueDev, Ptr<NetDevice> sourceEnbDe
 }
 
 void
-LteRLHelper::DeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice,Ptr<NetDevice> enbDevice, uint8_t bearerId)
+LteRlHelper::DeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice,Ptr<NetDevice> enbDevice, uint8_t bearerId)
 {
   NS_LOG_FUNCTION (this << ueDevice << bearerId);
   NS_ASSERT_MSG (m_epcHelper != 0, "Dedicated EPS bearers cannot be de-activated when the EPC is not used");
@@ -1027,7 +1027,7 @@ LteRLHelper::DeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice,Ptr<NetDevice
 }
 
 void
-LteRLHelper::DoDeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice, Ptr<NetDevice> enbDevice, uint8_t bearerId)
+LteRlHelper::DoDeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice, Ptr<NetDevice> enbDevice, uint8_t bearerId)
 {
   NS_LOG_FUNCTION (this << ueDevice << bearerId);
 
@@ -1043,7 +1043,7 @@ LteRLHelper::DoDeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice, Ptr<NetDev
 
 
 void 
-LteRLHelper::ActivateDataRadioBearer (NetDeviceContainer ueDevices, EpsBearer bearer)
+LteRlHelper::ActivateDataRadioBearer (NetDeviceContainer ueDevices, EpsBearer bearer)
 {
   NS_LOG_FUNCTION (this);
   for (NetDeviceContainer::Iterator i = ueDevices.Begin (); i != ueDevices.End (); ++i)
@@ -1053,9 +1053,9 @@ LteRLHelper::ActivateDataRadioBearer (NetDeviceContainer ueDevices, EpsBearer be
 }
 
 void
-LteRLHelper::EnableLogComponents (void)
+LteRlHelper::EnableLogComponents (void)
 {
-  LogComponentEnable ("LteRLHelper", LOG_LEVEL_ALL);
+  LogComponentEnable ("LteRlHelper", LOG_LEVEL_ALL);
   LogComponentEnable ("LteEnbRrc", LOG_LEVEL_ALL);
   LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
   LogComponentEnable ("LteEnbMac", LOG_LEVEL_ALL);
@@ -1090,7 +1090,7 @@ LteRLHelper::EnableLogComponents (void)
 }
 
 void
-LteRLHelper::EnableTraces (void)
+LteRlHelper::EnableTraces (void)
 {
   EnablePhyTraces ();
   EnableMacTraces ();
@@ -1099,15 +1099,15 @@ LteRLHelper::EnableTraces (void)
 }
 
 void
-LteRLHelper::EnableRlcTraces (void)
+LteRlHelper::EnableRlcTraces (void)
 {
-  NS_ASSERT_MSG (m_rlcStats == 0, "please make sure that LteRLHelper::EnableRlcTraces is called at most once");
+  NS_ASSERT_MSG (m_rlcStats == 0, "please make sure that LteRlHelper::EnableRlcTraces is called at most once");
   m_rlcStats = CreateObject<RadioBearerStatsCalculator> ("RLC");
   m_radioBearerStatsConnector.EnableRlcStats (m_rlcStats);
 }
 
 int64_t
-LteRLHelper::AssignStreams (NetDeviceContainer c, int64_t stream)
+LteRlHelper::AssignStreams (NetDeviceContainer c, int64_t stream)
 {
   int64_t currentStream = stream;
   if ((m_fadingModule != 0) && (m_fadingStreamsAssigned == false))
@@ -1147,7 +1147,7 @@ LteRLHelper::AssignStreams (NetDeviceContainer c, int64_t stream)
 
 
 void
-LteRLHelper::EnablePhyTraces (void)
+LteRlHelper::EnablePhyTraces (void)
 {
   EnableDlPhyTraces ();
   EnableUlPhyTraces ();
@@ -1158,28 +1158,28 @@ LteRLHelper::EnablePhyTraces (void)
 }
 
 void
-LteRLHelper::EnableDlTxPhyTraces (void)
+LteRlHelper::EnableDlTxPhyTraces (void)
 {
   Config::Connect ("/NodeList/*/DeviceList/*/LteEnbPhy/DlPhyTransmission",
                    MakeBoundCallback (&PhyTxStatsCalculator::DlPhyTransmissionCallback, m_phyTxStats));
 }
 
 void
-LteRLHelper::EnableUlTxPhyTraces (void)
+LteRlHelper::EnableUlTxPhyTraces (void)
 {
   Config::Connect ("/NodeList/*/DeviceList/*/LteUePhy/UlPhyTransmission",
                    MakeBoundCallback (&PhyTxStatsCalculator::UlPhyTransmissionCallback, m_phyTxStats));
 }
 
 void
-LteRLHelper::EnableDlRxPhyTraces (void)
+LteRlHelper::EnableDlRxPhyTraces (void)
 {
   Config::Connect ("/NodeList/*/DeviceList/*/LteUePhy/DlSpectrumPhy/DlPhyReception",
                    MakeBoundCallback (&PhyRxStatsCalculator::DlPhyReceptionCallback, m_phyRxStats));
 }
 
 void
-LteRLHelper::EnableUlRxPhyTraces (void)
+LteRlHelper::EnableUlRxPhyTraces (void)
 {
   Config::Connect ("/NodeList/*/DeviceList/*/LteEnbPhy/UlSpectrumPhy/UlPhyReception",
                    MakeBoundCallback (&PhyRxStatsCalculator::UlPhyReceptionCallback, m_phyRxStats));
@@ -1187,7 +1187,7 @@ LteRLHelper::EnableUlRxPhyTraces (void)
 
 
 void
-LteRLHelper::EnableMacTraces (void)
+LteRlHelper::EnableMacTraces (void)
 {
   EnableDlMacTraces ();
   EnableUlMacTraces ();
@@ -1195,7 +1195,7 @@ LteRLHelper::EnableMacTraces (void)
 
 
 void
-LteRLHelper::EnableDlMacTraces (void)
+LteRlHelper::EnableDlMacTraces (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
   Config::Connect ("/NodeList/*/DeviceList/*/LteEnbMac/DlScheduling",
@@ -1203,7 +1203,7 @@ LteRLHelper::EnableDlMacTraces (void)
 }
 
 void
-LteRLHelper::EnableUlMacTraces (void)
+LteRlHelper::EnableUlMacTraces (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
   Config::Connect ("/NodeList/*/DeviceList/*/LteEnbMac/UlScheduling",
@@ -1211,7 +1211,7 @@ LteRLHelper::EnableUlMacTraces (void)
 }
 
 void
-LteRLHelper::EnableDlPhyTraces (void)
+LteRlHelper::EnableDlPhyTraces (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
   Config::Connect ("/NodeList/*/DeviceList/*/LteUePhy/ReportCurrentCellRsrpSinr",
@@ -1219,7 +1219,7 @@ LteRLHelper::EnableDlPhyTraces (void)
 }
 
 void
-LteRLHelper::EnableUlPhyTraces (void)
+LteRlHelper::EnableUlPhyTraces (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
   Config::Connect ("/NodeList/*/DeviceList/*/LteEnbPhy/ReportUeSinr",
@@ -1230,21 +1230,21 @@ LteRLHelper::EnableUlPhyTraces (void)
 }
 
 Ptr<RadioBearerStatsCalculator>
-LteRLHelper::GetRlcStats (void)
+LteRlHelper::GetRlcStats (void)
 {
   return m_rlcStats;
 }
 
 void
-LteRLHelper::EnablePdcpTraces (void)
+LteRlHelper::EnablePdcpTraces (void)
 {
-  NS_ASSERT_MSG (m_pdcpStats == 0, "please make sure that LteRLHelper::EnablePdcpTraces is called at most once");
+  NS_ASSERT_MSG (m_pdcpStats == 0, "please make sure that LteRlHelper::EnablePdcpTraces is called at most once");
   m_pdcpStats = CreateObject<RadioBearerStatsCalculator> ("PDCP");
   m_radioBearerStatsConnector.EnablePdcpStats (m_pdcpStats);
 }
 
 Ptr<RadioBearerStatsCalculator>
-LteRLHelper::GetPdcpStats (void)
+LteRlHelper::GetPdcpStats (void)
 {
   return m_pdcpStats;
 }
