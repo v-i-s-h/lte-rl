@@ -41,7 +41,7 @@
 namespace ns3 {
 
 
-class LteRLUePhy;
+class LteRlUePhy;
 class LteEnbPhy;
 class SpectrumChannel;
 class EpcHelper;
@@ -93,11 +93,11 @@ class SpectrumPropagationLossModel;
  * are created by calling InstallUeDevice(). EPC helper can be set by using
  * SetEpcHelper().
  */
-class LteRLHelper : public Object
+class LteRlHelper : public Object
 {
 public:
-  LteRLHelper (void);
-  virtual ~LteRLHelper (void);
+  LteRlHelper (void);
+  virtual ~LteRlHelper (void);
 
   /**
    *  Register this type.

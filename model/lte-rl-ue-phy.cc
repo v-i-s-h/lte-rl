@@ -28,15 +28,15 @@
 #include <ns3/simulator.h>
 #include <ns3/double.h>
 #include "lte-rl-ue-phy.h"
-#include "lte-enb-phy.h"
-#include "lte-net-device.h"
-#include "lte-ue-net-device.h"
-#include "lte-enb-net-device.h"
-#include "lte-spectrum-value-helper.h"
-#include "lte-amc.h"
-#include "lte-ue-mac.h"
-#include "ff-mac-common.h"
-#include "lte-chunk-processor.h"
+#include <ns3/lte-enb-phy.h>
+#include <ns3/lte-net-device.h>
+#include <ns3/lte-ue-net-device.h>
+#include <ns3/lte-enb-net-device.h>
+#include <ns3/lte-spectrum-value-helper.h>
+#include <ns3/lte-amc.h>
+#include <ns3/lte-ue-mac.h>
+#include <ns3/ff-mac-common.h>
+#include <ns3/lte-chunk-processor.h>
 #include <ns3/lte-common.h>
 #include <ns3/pointer.h>
 #include <ns3/boolean.h>
@@ -71,7 +71,7 @@ static const Time UL_SRS_DELAY_FROM_SUBFRAME_START = NanoSeconds (1e6 - 71429);
 ////////////////////////////////////////
 
 
-class UeMemberLteRlUePhySapProvider : public LteRlUePhySapProvider
+class UeMemberLteRlUePhySapProvider : public LteUePhySapProvider
 {
 public:
   UeMemberLteRlUePhySapProvider (LteRlUePhy* phy);
@@ -139,8 +139,8 @@ LteRlUePhy::LteRlUePhy ()
   NS_FATAL_ERROR ("This constructor should not be called");
 }
 
-LteRlUePhy::LteRlUePhy (Ptr<LteSpectrumPhy> dlPhy, Ptr<LteSpectrumPhy> ulPhy)
-  : LtePhy (dlPhy, ulPhy),
+LteRlUePhy::LteRlUePhy (Ptr<LteRlSpectrumPhy> dlPhy, Ptr<LteRlSpectrumPhy> ulPhy)
+  : LteRlPhy (dlPhy, ulPhy),
     m_p10CqiPeriodicity (MilliSeconds (1)),  // ideal behavior
     m_a30CqiPeriodicity (MilliSeconds (1)),  // ideal behavior
     m_uePhySapUser (0),
@@ -180,7 +180,7 @@ LteRlUePhy::DoDispose ()
   NS_LOG_FUNCTION (this);
   delete m_uePhySapProvider;
   delete m_ueCphySapProvider;
-  LtePhy::DoDispose ();
+  LteRlPhy::DoDispose ();
 }
 
 
@@ -259,17 +259,17 @@ LteRlUePhy::GetTypeId (void)
                      MakeTraceSourceAccessor (&LteRlUePhy::m_ulPhyTransmission),
                      "ns3::PhyTransmissionStatParameters::TracedCallback")
     .AddAttribute ("DlSpectrumPhy",
-                   "The downlink LteSpectrumPhy associated to this LtePhy",
+                   "The downlink LteRlSpectrumPhy associated to this LtePhy",
                    TypeId::ATTR_GET,
                    PointerValue (),
                    MakePointerAccessor (&LteRlUePhy::GetDlSpectrumPhy),
-                   MakePointerChecker <LteSpectrumPhy> ())
+                   MakePointerChecker <LteRlSpectrumPhy> ())
     .AddAttribute ("UlSpectrumPhy",
-                   "The uplink LteSpectrumPhy associated to this LtePhy",
+                   "The uplink LteRlSpectrumPhy associated to this LtePhy",
                    TypeId::ATTR_GET,
                    PointerValue (),
                    MakePointerAccessor (&LteRlUePhy::GetUlSpectrumPhy),
-                   MakePointerChecker <LteSpectrumPhy> ())
+                   MakePointerChecker <LteRlSpectrumPhy> ())
     .AddAttribute ("RsrqUeMeasThreshold",
                    "Receive threshold for PSS on RSRQ [dB]",
                    DoubleValue (-1000.0),
@@ -321,18 +321,18 @@ LteRlUePhy::DoInitialize ()
     {
       Simulator::ScheduleNow (&LteRlUePhy::SubframeIndication, this, 1, 1);
     }  
-  LtePhy::DoInitialize ();
+  LteRlPhy::DoInitialize ();
 }
 
 void
-LteRlUePhy::SetLteRlUePhySapUser (LteRlUePhySapUser* s)
+LteRlUePhy::SetLteUePhySapUser (LteUePhySapUser* s)
 {
   NS_LOG_FUNCTION (this);
   m_uePhySapUser = s;
 }
 
-LteRlUePhySapProvider*
-LteRlUePhy::GetLteRlUePhySapProvider ()
+LteUePhySapProvider*
+LteRlUePhy::GetLteUePhySapProvider ()
 {
   NS_LOG_FUNCTION (this);
   return (m_uePhySapProvider);
@@ -395,13 +395,13 @@ LteRlUePhy::GetMacChDelay (void) const
   return (m_macChTtiDelay);
 }
 
-Ptr<LteSpectrumPhy>
+Ptr<LteRlSpectrumPhy>
 LteRlUePhy::GetDlSpectrumPhy () const
 {
   return m_downlinkSpectrumPhy;
 }
 
-Ptr<LteSpectrumPhy>
+Ptr<LteRlSpectrumPhy>
 LteRlUePhy::GetUlSpectrumPhy () const
 {
   return m_uplinkSpectrumPhy;

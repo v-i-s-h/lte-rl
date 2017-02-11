@@ -8,6 +8,9 @@ def build(bld):
     module = bld.create_ns3_module('lte-rl', lte_module_dependencies)
     module.source = [
         'helper/lte-rl-helper.cc',
+        'model/lte-rl-ue-phy.cc',
+        'model/lte-rl-spectrum-phy.cc',
+        'model/lte-rl-phy.cc'
         ]
 
     module_test = bld.create_ns3_module_test_library('lte')
@@ -18,6 +21,9 @@ def build(bld):
     headers.module = 'lte-rl'
     headers.source = [
         'helper/lte-rl-helper.h',
+        'model/lte-rl-ue-phy.h',
+        'model/lte-rl-spectrum-phy.h',
+        'model/lte-rl-phy.h'
         ]
 
     if (bld.env['ENABLE_EMU']):

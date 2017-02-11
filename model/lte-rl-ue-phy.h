@@ -23,7 +23,8 @@
 #define LTE_RL_UE_PHY_H
 
 
-#include <ns3/lte-phy.h>
+// #include <ns3/lte-phy.h>
+#include <ns3/lte-rl-phy.h>
 #include <ns3/ff-mac-common.h>
 
 #include <ns3/lte-control-messages.h>
@@ -48,11 +49,11 @@ class LteHarqPhy;
  *
  * The LteSpectrumPhy models the physical layer of LTE
  */
-class LteRLUePhy : public LtePhy
+class LteRlUePhy : public LteRlPhy
 {
 
-  friend class UeMemberLteUePhySapProvider;
-  friend class MemberLteUeCphySapProvider<LteUePhy>;
+  friend class UeMemberLteRlUePhySapProvider;
+  friend class MemberLteUeCphySapProvider<LteRlUePhy>;
 
 public:
   /**
@@ -68,16 +69,16 @@ public:
   /**
    * @warning the default constructor should not be used
    */
-  LteRLUePhy ();
+  LteRlUePhy ();
 
   /**
    *
    * \param dlPhy the downlink LteSpectrumPhy instance
    * \param ulPhy the uplink LteSpectrumPhy instance
    */
-  LteRLUePhy (Ptr<LteSpectrumPhy> dlPhy, Ptr<LteSpectrumPhy> ulPhy);
+  LteRlUePhy (Ptr<LteRlSpectrumPhy> dlPhy, Ptr<LteRlSpectrumPhy> ulPhy);
 
-  virtual ~LteUePhy ();
+  virtual ~LteRlUePhy ();
 
   // inherited from Object
   static TypeId GetTypeId (void);
@@ -142,12 +143,12 @@ public:
   /**
    * \return a pointer to the LteSpectrumPhy instance relative to the downlink
    */
-  Ptr<LteSpectrumPhy> GetDlSpectrumPhy () const;
+  Ptr<LteRlSpectrumPhy> GetDlSpectrumPhy () const;
 
   /**
    * \return a pointer to the LteSpectrumPhy instance relative to the uplink
    */
-  Ptr<LteSpectrumPhy> GetUlSpectrumPhy () const;
+  Ptr<LteRlSpectrumPhy> GetUlSpectrumPhy () const;
 
   /**
    * \brief Create the PSD for the TX
