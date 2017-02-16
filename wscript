@@ -32,9 +32,9 @@ def build(bld):
         'model/lte-rl-enb-phy.h'
         ]
 
-    if (bld.env['ENABLE_EMU']):
-        module.source.append ('helper/emu-epc-helper.cc')
-        headers.source.append ('helper/emu-epc-helper.h')
+    # if (bld.env['ENABLE_EMU']):
+    #     module.source.append ('helper/emu-epc-helper.cc')
+    #     headers.source.append ('helper/emu-epc-helper.h')
 
     if (bld.env['ENABLE_EXAMPLES']):
       bld.recurse('examples')
