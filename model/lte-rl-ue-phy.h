@@ -40,7 +40,7 @@
 namespace ns3 {
 
 class PacketBurst;
-class LteEnbPhy;
+class LteRlEnbPhy;
 class LteHarqPhy;
 
 
