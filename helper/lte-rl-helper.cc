@@ -78,7 +78,7 @@ LteRlHelper::LteRlHelper (void)
     m_cellIdCounter (0)
 {
   NS_LOG_FUNCTION (this);
-  m_enbNetDeviceFactory.SetTypeId (LteEnbNetDevice::GetTypeId ());
+  m_enbNetDeviceFactory.SetTypeId (LteRlEnbNetDevice::GetTypeId ());
   m_enbAntennaModelFactory.SetTypeId (IsotropicAntennaModel::GetTypeId ());
   m_ueNetDeviceFactory.SetTypeId (LteRlUeNetDevice::GetTypeId ());
   m_ueAntennaModelFactory.SetTypeId (IsotropicAntennaModel::GetTypeId ());
@@ -516,7 +516,7 @@ LteRlHelper::InstallSingleEnbDevice (Ptr<Node> n)
   ffrAlgorithm->SetLteFfrRrcSapUser (rrc->GetLteFfrRrcSapUser ());
   //FFR SAP END
 
-  Ptr<LteEnbNetDevice> dev = m_enbNetDeviceFactory.Create<LteEnbNetDevice> ();
+  Ptr<LteRlEnbNetDevice> dev = m_enbNetDeviceFactory.Create<LteRlEnbNetDevice> ();
   dev->SetNode (n);
   dev->SetAttribute ("CellId", UintegerValue (cellId)); 
   dev->SetAttribute ("LteEnbPhy", PointerValue (phy));
@@ -688,7 +688,7 @@ LteRlHelper::InstallSingleUeDevice (Ptr<Node> n)
   Ptr<LteRlUeNetDevice> dev = m_ueNetDeviceFactory.Create<LteRlUeNetDevice> ();
   dev->SetNode (n);
   dev->SetAttribute ("Imsi", UintegerValue (imsi));
-  dev->SetAttribute ("LteRlUePhy", PointerValue (phy));
+  dev->SetAttribute ("LteUePhy", PointerValue (phy));
   dev->SetAttribute ("LteUeMac", PointerValue (mac));
   dev->SetAttribute ("LteUeRrc", PointerValue (rrc));
   dev->SetAttribute ("EpcUeNas", PointerValue (nas));
@@ -771,10 +771,10 @@ void
 LteRlHelper::Attach (Ptr<NetDevice> ueDevice, Ptr<NetDevice> enbDevice)
 {
   NS_LOG_FUNCTION (this);
-  //enbRrc->SetCellId (enbDevice->GetObject<LteEnbNetDevice> ()->GetCellId ());
+  //enbRrc->SetCellId (enbDevice->GetObject<LteRlEnbNetDevice> ()->GetCellId ());
 
   Ptr<LteRlUeNetDevice> ueLteDevice = ueDevice->GetObject<LteRlUeNetDevice> ();
-  Ptr<LteEnbNetDevice> enbLteDevice = enbDevice->GetObject<LteEnbNetDevice> ();
+  Ptr<LteRlEnbNetDevice> enbLteDevice = enbDevice->GetObject<LteRlEnbNetDevice> ();
 
   Ptr<EpcUeNas> ueNas = ueLteDevice->GetNas ();
   ueNas->Connect (enbLteDevice->GetCellId (), enbLteDevice->GetDlEarfcn ());
@@ -938,7 +938,7 @@ DrbActivatorRL::ActivateDrb (uint64_t imsi, uint16_t cellId, uint16_t rnti)
       NS_ASSERT (ueRrc->GetState () == LteUeRrc::CONNECTED_NORMALLY);
       uint16_t rnti = ueRrc->GetRnti ();
       Ptr<LteRlEnbNetDevice> enbLteDevice = m_ueDevice->GetObject<LteRlUeNetDevice> ()->GetTargetEnb ();
-      Ptr<LteEnbRrc> enbRrc = enbLteDevice->GetObject<LteEnbNetDevice> ()->GetRrc ();
+      Ptr<LteEnbRrc> enbRrc = enbLteDevice->GetObject<LteRlEnbNetDevice> ()->GetRrc ();
       NS_ASSERT (ueRrc->GetCellId () == enbLteDevice->GetCellId ());
       Ptr<UeManager> ueManager = enbRrc->GetUeManager (rnti);
       NS_ASSERT (ueManager->GetState () == UeManager::CONNECTED_NORMALLY
@@ -1014,8 +1014,8 @@ LteRlHelper::DoHandoverRequest (Ptr<NetDevice> ueDev, Ptr<NetDevice> sourceEnbDe
 {
   NS_LOG_FUNCTION (this << ueDev << sourceEnbDev << targetEnbDev);
 
-  uint16_t targetCellId = targetEnbDev->GetObject<LteEnbNetDevice> ()->GetCellId ();
-  Ptr<LteEnbRrc> sourceRrc = sourceEnbDev->GetObject<LteEnbNetDevice> ()->GetRrc ();
+  uint16_t targetCellId = targetEnbDev->GetObject<LteRlEnbNetDevice> ()->GetCellId ();
+  Ptr<LteEnbRrc> sourceRrc = sourceEnbDev->GetObject<LteRlEnbNetDevice> ()->GetRrc ();
   uint16_t rnti = ueDev->GetObject<LteRlUeNetDevice> ()->GetRrc ()->GetRnti ();
   sourceRrc->SendHandoverRequest (rnti, targetCellId);
 }
@@ -1040,7 +1040,7 @@ LteRlHelper::DoDeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice, Ptr<NetDev
   uint16_t rnti = ueDevice->GetObject<LteRlUeNetDevice> ()->GetRrc ()->GetRnti ();
 
 
-  Ptr<LteEnbRrc> enbRrc = enbDevice->GetObject<LteEnbNetDevice> ()->GetRrc ();
+  Ptr<LteEnbRrc> enbRrc = enbDevice->GetObject<LteRlEnbNetDevice> ()->GetRrc ();
 
   enbRrc->DoSendReleaseDataRadioBearer (imsi,rnti,bearerId);
 }
@@ -1079,9 +1079,9 @@ LteRlHelper::EnableLogComponents (void)
   LogComponentEnable ("LteChunkProcessor", LOG_LEVEL_ALL);
 
   std::string propModelStr = m_dlPathlossModelFactory.GetTypeId ().GetName ().erase (0,5).c_str ();
-  LogComponentEnable ("LteNetDevice", LOG_LEVEL_ALL);
+  LogComponentEnable ("LteRlNetDevice", LOG_LEVEL_ALL);
   LogComponentEnable ("LteRlUeNetDevice", LOG_LEVEL_ALL);
-  LogComponentEnable ("LteEnbNetDevice", LOG_LEVEL_ALL);
+  LogComponentEnable ("LteRlEnbNetDevice", LOG_LEVEL_ALL);
 
   LogComponentEnable ("RadioBearerStatsCalculator", LOG_LEVEL_ALL);
   LogComponentEnable ("LteStatsCalculator", LOG_LEVEL_ALL);
@@ -1171,14 +1171,14 @@ LteRlHelper::EnableDlTxPhyTraces (void)
 void
 LteRlHelper::EnableUlTxPhyTraces (void)
 {
-  Config::Connect ("/NodeList/*/DeviceList/*/LteRlUePhy/UlPhyTransmission",
+  Config::Connect ("/NodeList/*/DeviceList/*/LteUePhy/UlPhyTransmission",
                    MakeBoundCallback (&PhyTxStatsCalculator::UlPhyTransmissionCallback, m_phyTxStats));
 }
 
 void
 LteRlHelper::EnableDlRxPhyTraces (void)
 {
-  Config::Connect ("/NodeList/*/DeviceList/*/LteRlUePhy/DlSpectrumPhy/DlPhyReception",
+  Config::Connect ("/NodeList/*/DeviceList/*/LteUePhy/DlSpectrumPhy/DlPhyReception",
                    MakeBoundCallback (&PhyRxStatsCalculator::DlPhyReceptionCallback, m_phyRxStats));
 }
 
@@ -1218,7 +1218,7 @@ void
 LteRlHelper::EnableDlPhyTraces (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
-  Config::Connect ("/NodeList/*/DeviceList/*/LteRlUePhy/ReportCurrentCellRsrpSinr",
+  Config::Connect ("/NodeList/*/DeviceList/*/LteUePhy/ReportCurrentCellRsrpSinr",
                    MakeBoundCallback (&PhyStatsCalculator::ReportCurrentCellRsrpSinrCallback, m_phyStats));
 }
 

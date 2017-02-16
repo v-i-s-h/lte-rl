@@ -94,7 +94,7 @@ TypeId LteRlEnbNetDevice::GetTypeId (void)
                    "The PHY associated to this EnbNetDevice",
                    PointerValue (),
                    MakePointerAccessor (&LteRlEnbNetDevice::m_phy),
-                   MakePointerChecker <LteEnbPhy> ())
+                   MakePointerChecker <LteRlEnbPhy> ())
     .AddAttribute ("UlBandwidth",
                    "Uplink Transmission Bandwidth Configuration in number of Resource Blocks",
                    UintegerValue (25),
