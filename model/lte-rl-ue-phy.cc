@@ -165,6 +165,21 @@ LteRlUePhy::LteRlUePhy (Ptr<LteRlSpectrumPhy> dlPhy, Ptr<LteRlSpectrumPhy> ulPhy
                  "Cannot create UE devices after simulation started");
   Simulator::Schedule (m_ueMeasurementsFilterPeriod, &LteRlUePhy::ReportUeMeasurements, this);
 
+
+  //Initializing values used for Q Learning
+  m_stateCurrent  = 0;
+  m_statePrev     = 0;
+  m_action        = ACTION_NOC;
+  m_delta_cqi     = DELTA_ZERO;
+  for( unsigned nStates = 0; nStates < NUMBER_STATES; nStates++ ) {
+    for( unsigned nDeltas = 0; nDeltas < NUMBER_DELTAS; nDeltas++ ) {
+      for( unsigned nActions = 0; nActions < NUMBER_ACTIONS; nActions++ ) {
+        m_qTable[nStates][nDeltas][nActions] = 0.00f;
+      }
+    }
+  }
+
+
   DoReset ();
 }
 
@@ -713,6 +728,8 @@ LteRlUePhy::CreateDlCqiFeedbackMessage (const SpectrumValue& sinr)
   if (Simulator::Now () > m_p10CqiLast + m_p10CqiPeriodicity)
     {
       cqi = m_amc->CreateCqiFeedbacks (newSinr, m_dlBandwidth);
+      //Updating CQI values using Q Learning
+      cqi = LteRlUpdateCqiQL(cqi);
 
       int nLayer = TransmissionModesLayers::TxMode2LayerNum (m_transmissionMode);
       int nbSubChannels = cqi.size ();
@@ -752,6 +769,9 @@ LteRlUePhy::CreateDlCqiFeedbackMessage (const SpectrumValue& sinr)
   else if (Simulator::Now () > m_a30CqiLast + m_a30CqiPeriodicity)
     {
       cqi = m_amc->CreateCqiFeedbacks (newSinr, GetRbgSize ());
+      //Updating CQI values using Q Learning
+      cqi = LteRlUpdateCqiQL(cqi);
+
       int nLayer = TransmissionModesLayers::TxMode2LayerNum (m_transmissionMode);
       int nbSubChannels = cqi.size ();
       int rbgSize = GetRbgSize ();
@@ -1456,5 +1476,73 @@ LteRlUePhy::SwitchToState (State newState)
   m_stateTransitionTrace (m_cellId, m_rnti, oldState, newState);
 }
 
+std::vector<int> 
+LteRlUePhy::LteRlUpdateCqiQL(std::vector<int> _cqi)
+{
+  int cqiSum = 0;
+  //Updated CQI value sto be returned
+  std::vector<int> cqi;
 
+  //define epsilon value for exploration
+  double epsilon = 0.1;
+
+  //Finding average value of cqi
+  for(  std::vector<int>::iterator it = _cqi.begin(); it != _cqi.end(); ++it ) {
+    cqiSum += *it;
+  }
+  unsigned cqiVectorSize = _cqi.size();
+  int cqiAverage = cqiSum/cqiVectorSize;
+
+  //Current state is defined by the average cqi value
+  m_stateCurrent = cqiAverage;
+  //Find the change in CQI is positive, negative or zero
+  m_delta_cqi = (m_stateCurrent > m_statePrev)?DELTA_POS:((m_stateCurrent < m_statePrev)?DELTA_NEG:DELTA_ZERO);
+
+  //To get a random value between 0.00 and 1.00
+  Ptr<UniformRandomVariable> random_eps = CreateObject<UniformRandomVariable>();
+  random_eps->SetAttribute( "Max", DoubleValue(1.00) );
+  random_eps->SetAttribute( "Min", DoubleValue(0.00) );
+
+  //To get random integer to choose uniformly between all actions
+  Ptr<UniformRandomVariable> random_act = CreateObject<UniformRandomVariable>();    
+  random_act->SetAttribute( "Max", DoubleValue(NUMBER_ACTIONS - 1) );   
+  random_act->SetAttribute( "Min", DoubleValue(0) );
+
+
+  //If random number greater than epsilon then go for greedy action selection
+  if(random_eps->GetValue() > epsilon)
+  {
+    double tmp_maxValue = m_qTable[m_stateCurrent][m_delta_cqi][0];  // initialise with Q value of first action
+    m_action = 0;
+    for( unsigned i = 1; i < NUMBER_ACTIONS; i++ ) {
+      if( m_qTable[m_stateCurrent][m_delta_cqi][i] > tmp_maxValue ) {
+        tmp_maxValue  = m_qTable[m_stateCurrent][m_delta_cqi][i];
+        m_action   = i;
+      }
+    }
+  }
+  else
+  {
+    m_action = random_act->GetInteger();
+  }
+
+  NS_LOG_DEBUG (this << "Action taken:  " << m_action );
+  //Update the CQI value
+  int newCqi = m_stateCurrent + m_action -1;
+  newCqi = newCqi<0?0:(newCqi > 15?15:newCqi);
+
+  //Save the new CQI values in vector of CQI to be returned
+  for(unsigned i = 0; i < cqiVectorSize; i++ ){
+    cqi.push_back(newCqi);
+  }
+
+  //Updating the current state as previous state for next iteration and current state as the updated CQI value
+
+  m_statePrev = m_stateCurrent;
+  m_stateCurrent = cqi[0];
+  
+  NS_LOG_DEBUG (this << "Next State: " << m_stateCurrent );
+
+  return(cqi);
+}
 } // namespace ns3

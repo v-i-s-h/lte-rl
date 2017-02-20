@@ -36,6 +36,20 @@
 #include <set>
 #include <ns3/lte-ue-power-control.h>
 
+#define ACTION_DEC 0
+#define ACTION_NOC 1
+#define ACTION_INC 2
+
+
+#define DELTA_NEG   0
+#define DELTA_ZERO  1
+#define DELTA_POS   2
+
+
+#define NUMBER_STATES  15
+#define NUMBER_DELTAS   3
+#define NUMBER_ACTIONS  3
+
 
 namespace ns3 {
 
@@ -270,6 +284,17 @@ public:
   typedef void (* RsrpRsrqTracedCallback)
     (uint16_t rnti, uint16_t cellId, double rsrp, double rsrq,
      bool isServingCell);
+
+
+  // For Q Learning algorithm implementation
+  signed m_stateCurrent;
+  signed m_statePrev;
+  signed m_action;
+  double m_qTable[NUMBER_STATES][NUMBER_DELTAS][NUMBER_ACTIONS];
+  signed m_delta_cqi;
+
+
+  std::vector<int> LteRlUpdateCqiQL(std::vector<int> );
 
 private:
 
